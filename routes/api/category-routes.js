@@ -1,11 +1,9 @@
 const router = require('express').Router();
 const { Category, Product } = require('../../models');
 
-// The `/api/categories` endpoint
-
+// ROUTE TO GET ALL
 router.get('/', async (req, res) => {
   try {
-
 
     const categories = await Category.findAll({
       include: Product
@@ -15,7 +13,6 @@ router.get('/', async (req, res) => {
       return res.status(404).json({
         message: 'Cannot get categories'
       })
-      // return
     }
 
     res.status(200).json(categories)
@@ -25,6 +22,7 @@ router.get('/', async (req, res) => {
   }
 });
 
+// ROUTE TO GET BY ID
 router.get('/:id', async (req, res) => {
   try {
     const category = await Category.findByPk(req.params.id, {
@@ -42,6 +40,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// ROUTE TO CREATE
 router.post('/', async (req, res) => {
   try {
     const newCategory = await Category.create(req.body);
