@@ -54,12 +54,32 @@ router.post('/', async (req, res) => {
 
 
 router.put('/:id', async (req, res) => {
- 
+ try {
+  const category = await Category.update(req.body, {
+    where: {
+      id: req.params.id
+    }
+  })
+  res.status(201).json(category)
+ } catch (error) {
+  res.status(500).send('Internal server error');
+  
+ }
 });
 
 
 router.delete('/:id', (req, res) => {
-  // delete a category by its `id` value
+try {
+  const destroy = await Category.destroy({
+    where: {
+      id: req.params.id
+    }
+  })
+} catch (error) {
+  res.status(500).send('Internal server error');
+  
+}
+
 });
 
 module.exports = router;
