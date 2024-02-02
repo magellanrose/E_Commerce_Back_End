@@ -8,7 +8,6 @@ router.get('/', async (req, res) => {
     const categories = await Category.findAll({
       include: Product
     });
-    console.log(categories)
     if (!categories) {
       return res.status(404).json({
         message: 'Cannot get categories'
@@ -68,13 +67,15 @@ router.put('/:id', async (req, res) => {
 });
 
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
 try {
   const destroy = await Category.destroy({
     where: {
       id: req.params.id
     }
   })
+  res.status(201).json(destroy);
+
 } catch (error) {
   res.status(500).send('Internal server error');
   
