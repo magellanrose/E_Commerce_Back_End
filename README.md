@@ -2,6 +2,10 @@
 
 ## Description
 This is a E Commerce Back End App. I updated the routes and server files to request and respond with the server correctly. On the insomnia application you can view each route.
+
+## Github Repository
+https://github.com/magellanrose/E_Commerce_Back_End
+
 ## Usage
 To start the app run npm start into the terminal.
 ## Installation
