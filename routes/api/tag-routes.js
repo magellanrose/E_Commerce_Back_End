@@ -1,12 +1,11 @@
 const router = require('express').Router();
 const { Tag, Product, ProductTag } = require('../../models');
 
-// The `/api/tags` endpoint
-
+// ROUTE TO GET ALL TAGS WITH ASSOCIATED PRODUCTS
 router.get('/', async (req, res) => {
-  // find all tags
-  // be sure to include its associated Product data
   try {
+    
+    // Fetching all tags with their associated products
     const tag = await Tag.findAll({
       include: [{
         model: Product,
@@ -21,11 +20,13 @@ router.get('/', async (req, res) => {
   }
 });
 
+// ROUTE TO GET A SINGLE TAG BY ID WITH ASSOCIATED PRODUCTS
 router.get('/:id', async (req, res) => {
-  // find a single tag by its `id`
-  // be sure to include its associated Product data
+
   try {
-    const singleTag = await Tag.findByPk(req.params.id,{
+
+    // Fetching a tag by its primary key (id) along with its associated products
+    const singleTag = await Tag.findByPk(req.params.id, {
       include: Product
     });
 
@@ -33,42 +34,49 @@ router.get('/:id', async (req, res) => {
 
   } catch (error) {
     res.status(500).send('Internal service error')
-    
+
   }
 });
 
+// ROUTE TO CREATE A NEW TAG
 router.post('/', async (req, res) => {
-  // create a new tag
+
   try {
+
+    // Creating a new tag using the data from the request body
     const newTag = await Tag.create(req.body);
 
     res.status(201).json(newTag);
 
   } catch (error) {
     res.status(500).send('Internal server error');
-    
+
   }
 });
 
+// ROUTE TO UPDATE A TAG BY ID
 router.put('/:id', async (req, res) => {
-  // update a tag's name by its `id` value
   try {
+
+    // Updating a tag by its primary key (id) using the data from the request body
     const updateTag = await Tag.update(req.body, {
       where: {
         id: req.params.id
       }
     })
-  res.status(201).json(updateTag)
+    res.status(201).json(updateTag)
 
   } catch (error) {
-  res.status(500).send('Internal server error');
-    
+    res.status(500).send('Internal server error');
+
   }
 });
 
+// ROUTE TO DELETE A TAG BY ID
 router.delete('/:id', async (req, res) => {
-  // delete on tag by its `id` value
   try {
+
+    // Deleting a tag by its primary key (id)
     const destroy = await Tag.destroy({
       where: {
         id: req.params.id
@@ -77,8 +85,8 @@ router.delete('/:id', async (req, res) => {
     res.status(201).json(destroy);
 
   } catch (error) {
-  res.status(500).send('Internal server error');
-    
+    res.status(500).send('Internal server error');
+
   }
 });
 

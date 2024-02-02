@@ -1,13 +1,14 @@
 const router = require('express').Router();
 const { Product, Category, Tag, ProductTag } = require('../../models');
 
-// The `/api/products` endpoint
 
-// get all products
+
+// ROUTE TO GET ALL PRODUCTS WITH ASSOCIATED CATEGORIES AND TAGS
 router.get('/', async (req, res) => {
-  // find all products
-  // be sure to include its associated Category and Tag data
+
   try {
+
+    // Fetching all products with their associated categories and tags
     const product = await Product.findAll({
       include: [Category, Tag]
     })
@@ -15,21 +16,22 @@ router.get('/', async (req, res) => {
 
   } catch (error) {
     res.status(500).send('interal error')
-    
+
   }
 
 });
 
-// get one product
+// ROUTE TO GET A SINGLE PRODUCT BY ID WITH ASSOCIATED CATEGORY AND TAGS
 router.get('/:id', async (req, res) => {
-  // find a single product by its `id`
-  // be sure to include its associated Category and Tag data
+
   try {
+
+    // Fetching a product by its primary key (id) along with its associated category and tags
     const oneProduct = await Product.findOne({
       where: {
         id: req.params.id
       },
-      include: [Category,{
+      include: [Category, {
         model: Tag,
         through: ProductTag
       }]
@@ -84,26 +86,26 @@ router.put('/:id', (req, res) => {
   })
     .then((product) => {
       if (req.body.tagIds && req.body.tagIds.length) {
-        
+
         ProductTag.findAll({
           where: { product_id: req.params.id }
         }).then((productTags) => {
           // create filtered list of new tag_ids
           const productTagIds = productTags.map(({ tag_id }) => tag_id);
           const newProductTags = req.body.tagIds
-          .filter((tag_id) => !productTagIds.includes(tag_id))
-          .map((tag_id) => {
-            return {
-              product_id: req.params.id,
-              tag_id,
-            };
-          });
+            .filter((tag_id) => !productTagIds.includes(tag_id))
+            .map((tag_id) => {
+              return {
+                product_id: req.params.id,
+                tag_id,
+              };
+            });
 
-            // figure out which ones to remove
+          // figure out which ones to remove
           const productTagsToRemove = productTags
-          .filter(({ tag_id }) => !req.body.tagIds.includes(tag_id))
-          .map(({ id }) => id);
-                  // run both actions
+            .filter(({ tag_id }) => !req.body.tagIds.includes(tag_id))
+            .map(({ id }) => id);
+          // run both actions
           return Promise.all([
             ProductTag.destroy({ where: { id: productTagsToRemove } }),
             ProductTag.bulkCreate(newProductTags),
@@ -119,19 +121,22 @@ router.put('/:id', (req, res) => {
     });
 });
 
+// ROUTE TO DELETE A PRODUCT BY ID
 router.delete('/:id', async (req, res) => {
-  // delete one product by its `id` value
+
   try {
+
+    // Deleting a product by its primary key (id) using Sequelize's destroy method
     const destroy = await Product.destroy({
       where: {
         id: req.params.id
       }
     })
-  res.status(201).json(destroy);
+    res.status(201).json(destroy);
 
   } catch (error) {
-  res.status(500).send('Internal server error');
-    
+    res.status(500).send('Internal server error');
+
   }
 });
 
