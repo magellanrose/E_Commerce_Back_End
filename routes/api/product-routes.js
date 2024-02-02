@@ -119,8 +119,20 @@ router.put('/:id', (req, res) => {
     });
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
   // delete one product by its `id` value
+  try {
+    const destroy = await Product.destroy({
+      where: {
+        id: req.params.id
+      }
+    })
+  res.status(201).json(destroy);
+
+  } catch (error) {
+  res.status(500).send('Internal server error');
+    
+  }
 });
 
 module.exports = router;
